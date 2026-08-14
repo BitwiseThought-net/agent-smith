@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      autoheal: true
+      autoheal: "true"
 
   the-architect:
     container_name: the-architect
@@ -33,12 +33,14 @@ services:
       - TEAM_CONFIG=team.json
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=.
-      - OPENAI_API_BASE=${LITELLM_BASE_URL}
+      - OPENAI_API_BASE=${LITELLM_BASE_URL:-http://litellm:4000}
       - CHROMA_API_BASE=http://chromadb:8000
       - CREWAI_STORAGE_DIR=/app/.crewai
     depends_on:
-      - litellm
-      - chromadb
+      litellm:
+        condition: service_healthy
+      chromadb:
+        condition: service_healthy
     healthcheck:
       test: "sh -c '[ $(($(date +%s) - $(stat -c %Y /tmp/heartbeat))) -lt 300 ]'"
       interval: 1m
@@ -46,7 +48,7 @@ services:
       retries: 3
       start_period: 2m
     labels:
-      autoheal: true
+      autoheal: "true"
 
   tool-installer:
     container_name: ai-tool-installer
@@ -72,19 +74,21 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     restart: always
     depends_on:
-      - litellm
-      - searxng
-      - ollama
+      litellm:
+        condition: service_healthy
+      searxng:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
     ports:
-      - "${UI_PORT}:8080"
+      - "${UI_PORT:-8080}:8080"
     volumes:
       - ai_open_webui_data:/app/backend/data
     env_file:
       - .env
     environment:
-      - "OPENAI_API_BASE_URL=${LITELLM_BASE_URL}"
       # Point Open WebUI at LiteLLM as if it were an OpenAI-compatible endpoint
-      - OPENAI_API_BASE_URL=http://litellm:4000
+      - OPENAI_API_BASE_URL=${LITELLM_BASE_URL:-http://litellm:4000}
       - OPENAI_API_KEY=${LITELLM_MASTER_KEY:-sk-change-me}
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:-change-this-secret}
       # Native web search feature, backed by the local SearXNG instance below.
@@ -93,7 +97,7 @@ services:
       - RAG_WEB_SEARCH_ENGINE=searxng
       - SEARXNG_QUERY_URL=http://searxng:8080/search?q=<query>
     labels:
-      autoheal: true
+      autoheal: "true"
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=5)"]
       interval: 10s
@@ -105,10 +109,8 @@ services:
     container_name: ai-litellm
     image: ghcr.io/berriai/litellm:main-latest
     restart: always
-    depends_on:
-      - ollama
     ports:
-      - "${LITELLM_PORT}:4000"
+      - "${LITELLM_PORT:-4000}:4000"
     volumes:
       - ./litellm-config.yaml:/app/config.yaml:ro
     env_file:
@@ -119,7 +121,16 @@ services:
     command: ["--config", "/app/config.yaml", "--port", "4000"]
 #     command: ["--model", "ollama/${MODEL_NAME}", "--port", "4000", "--drop_params"]
     labels:
-      autoheal: true
+      autoheal: "true"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   searxng:
     image: searxng/searxng:latest
@@ -132,11 +143,16 @@ services:
 #      - ./core-config/:/etc/searxng/:Z
       - ./searxng-config/:/etc/searxng/
 #      - core-data:/var/cache/searxng/
-
     env_file:
       - .env
     environment:
       - INSTANCE_NAME=local-searxng
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   chromadb:
     container_name: ai-chromadb
@@ -152,7 +168,13 @@ services:
       - IS_PERSISTENT=TRUE
       - ANONYMIZED_TELEMETRY=FALSE
     labels:
-      autoheal: true
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   ollama:
     container_name: ai-ollama
@@ -161,7 +183,7 @@ services:
     volumes:
       - ai_ollama_data:/root/.ollama
     ports:
-      - "${OLLAMA_PORT}:11434"
+      - "${OLLAMA_PORT:-11434}:11434"
     env_file:
       - .env
     entrypoint: /bin/sh -c "mkdir -p plugins && ollama serve & sleep 5 && ollama pull ${MODEL_NAME} && ollama pull nomic-embed-text && wait"
@@ -173,7 +195,13 @@ services:
               count: all
               capabilities: [gpu]
     labels:
-      autoheal: true
+      autoheal: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list | grep -q \"${MODEL_NAME}\" && ollama list | grep -q nomic-embed-text"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 5m
 
 volumes:
   ai_memory:
