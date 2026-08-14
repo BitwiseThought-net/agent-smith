@@ -3,6 +3,8 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+searxng-config/*.yml
+
 # Ignore active configuration files
 config.json
 team.json

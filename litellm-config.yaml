@@ -1,0 +1,19 @@
+model_list:
+  # Add one entry per Ollama model you've pulled. Tool-calling requires a
+  # model that actually supports function calling (llama3.1, qwen2.5,
+  # mistral-nemo, firefunction-v2, etc.). Plain "llama3" does not reliably.
+  - model_name: llama3.1
+    litellm_params:
+      model: ollama_chat/llama3.1
+      api_base: http://ollama:11434
+
+  - model_name: qwen2.5
+    litellm_params:
+      model: ollama_chat/qwen2.5
+      api_base: http://ollama:11434
+
+litellm_settings:
+  drop_params: true   # silently drop params a given model doesn't support
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY

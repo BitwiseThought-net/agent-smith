@@ -1,5 +1,18 @@
 services:
-  service:
+  autoheal:
+    container_name: ai-autoheal
+    depends_on:
+      - the-architect
+    image: willfarrell/autoheal:latest
+    restart: always
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      autoheal: true
+
+  the-architect:
     container_name: the-architect
     build:
       context: .
@@ -7,7 +20,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ai-memory:/app/.crewai
+      - ai_memory:/app/.crewai
       - .:/app/config_mount:ro
       - ./plugins:/app/plugins:ro
       - ./output:/app/output
@@ -35,43 +48,95 @@ services:
     labels:
       autoheal: true
 
-  ollama:
-    container_name: ai-ollama
-    image: ollama/ollama:latest
-    restart: always
-    ports:
-      - "11434:11434"
+  tool-installer:
+    container_name: ai-tool-installer
+    image: python:3.12-slim
+    depends_on:
+      open-webui:
+        condition: service_healthy
+    volumes:
+      - ./tools:/tools:ro
+      - ./scripts/install_tools.py:/install_tools.py:ro
     env_file:
       - .env
+    command: ["python", "/install_tools.py"]
+    environment:
+      - OPEN_WEBUI_URL=http://open-webui:8080
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      - ADMIN_NAME=${ADMIN_NAME:-Admin}
+    restart: "no"
+
+  open-webui:
+    container_name: ai-open-webui
+    image: ghcr.io/open-webui/open-webui:main
+    restart: always
+    depends_on:
+      - litellm
+      - searxng
+      - ollama
+    ports:
+      - "${UI_PORT}:8080"
     volumes:
-      - ./ollama:/root/.ollama
-    # Added mkdir -p plugins to ensure the directory exists for the service mount
-    entrypoint: /bin/sh -c "mkdir -p plugins && ollama serve & sleep 5 && ollama pull ${MODEL_NAME} && ollama pull nomic-embed-text && wait"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      - ai_open_webui_data:/app/backend/data
+    env_file:
+      - .env
+    environment:
+      - "OPENAI_API_BASE_URL=${LITELLM_BASE_URL}"
+      # Point Open WebUI at LiteLLM as if it were an OpenAI-compatible endpoint
+      - OPENAI_API_BASE_URL=http://litellm:4000
+      - OPENAI_API_KEY=${LITELLM_MASTER_KEY:-sk-change-me}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:-change-this-secret}
+      # Native web search feature, backed by the local SearXNG instance below.
+      # This is separate from (and complementary to) the custom scraping Tool.
+      - ENABLE_RAG_WEB_SEARCH=true
+      - RAG_WEB_SEARCH_ENGINE=searxng
+      - SEARXNG_QUERY_URL=http://searxng:8080/search?q=<query>
     labels:
       autoheal: true
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=5)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   litellm:
     container_name: ai-litellm
     image: ghcr.io/berriai/litellm:main-latest
     restart: always
+    depends_on:
+      - ollama
     ports:
       - "${LITELLM_PORT}:4000"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml:ro
     env_file:
       - .env
     environment:
       - OLLAMA_API_BASE=${OLLAMA_BASE_URL}
-    command: ["--model", "ollama/${MODEL_NAME}", "--port", "4000", "--drop_params"]
-    depends_on:
-      - ollama
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-change-me}
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+#     command: ["--model", "ollama/${MODEL_NAME}", "--port", "4000", "--drop_params"]
     labels:
       autoheal: true
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: ai-searxng
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+#      - ./core-config/:/etc/searxng/:Z
+      - ./searxng-config/:/etc/searxng/
+#      - core-data:/var/cache/searxng/
+
+    env_file:
+      - .env
+    environment:
+      - INSTANCE_NAME=local-searxng
 
   chromadb:
     container_name: ai-chromadb
@@ -81,41 +146,37 @@ services:
       - "8000:8000"
     volumes:
       - ./chroma-data:/chroma/chroma
+    env_file:
+      - .env
     environment:
       - IS_PERSISTENT=TRUE
       - ANONYMIZED_TELEMETRY=FALSE
     labels:
       autoheal: true
 
-  openwebui:
-    container_name: ai-openwebui
-    image: ghcr.io/open-webui/open-webui:main
+  ollama:
+    container_name: ai-ollama
+    image: ollama/ollama:latest
     restart: always
-    ports:
-      - "${UI_PORT}:8080"
     volumes:
-      - ./open-webui:/app/backend/data
+      - ai_ollama_data:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT}:11434"
     env_file:
       - .env
-    environment:
-      - "OPENAI_API_BASE_URL=${LITELLM_BASE_URL}"
-    depends_on:
-      - ollama
-    labels:
-      autoheal: true
-
-  autoheal:
-    container_name: ai-autoheal
-    depends_on:
-      - service
-    image: willfarrell/autoheal:latest
-    restart: always
-    environment:
-      - AUTOHEAL_CONTAINER_LABEL=autoheal
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: /bin/sh -c "mkdir -p plugins && ollama serve & sleep 5 && ollama pull ${MODEL_NAME} && ollama pull nomic-embed-text && wait"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     labels:
       autoheal: true
 
 volumes:
-  ai-memory:
+  ai_memory:
+  ai_ollama_data:
+  ai_open_webui_data:
+
