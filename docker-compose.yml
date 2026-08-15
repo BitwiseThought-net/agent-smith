@@ -170,7 +170,7 @@ services:
     labels:
       autoheal: "true"
     healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat', timeout=5)"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/api/v1/heartbeat"]
       interval: 10s
       timeout: 5s
       retries: 10
