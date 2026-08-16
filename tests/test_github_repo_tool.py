@@ -107,6 +107,129 @@ class TestReadGithubRepository:
         assert "Repository: owner/repo (branch: main)" in result
         assert "[Included 1 of 1 candidate files]" in result
 
+    def test_tree_fetch_failure_returns_error_string(self, tools, monkeypatch):
+        class FakeRepoMetaResp:
+            status_code = 200
+            def json(self):
+                return {"default_branch": "main"}
+
+        class FakeTreeResp:
+            status_code = 500
+            text = "Internal Server Error"
+
+        def fake_get(url, headers=None, timeout=None, **kw):
+            if "/git/trees/" in url:
+                return FakeTreeResp()
+            return FakeRepoMetaResp()
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        result = tools.read_github_repository("https://github.com/owner/repo")
+        assert "Error fetching repo tree" in result
+
+    def test_raw_file_fetch_failure_is_skipped_not_fatal(self, tools, monkeypatch):
+        class FakeRepoMetaResp:
+            status_code = 200
+            def json(self):
+                return {"default_branch": "main"}
+
+        class FakeTreeResp:
+            status_code = 200
+            def json(self):
+                return {"tree": [
+                    {"type": "blob", "path": "broken.py", "size": 10},
+                    {"type": "blob", "path": "fine.py", "size": 10},
+                ]}
+
+        def fake_get(url, headers=None, timeout=None, **kw):
+            if "raw.githubusercontent.com" in url:
+                if "broken.py" in url:
+                    raise requests.ConnectionError("simulated network failure")
+                return type("R", (), {"status_code": 200, "text": "print('fine')"})()
+            if "/git/trees/" in url:
+                return FakeTreeResp()
+            return FakeRepoMetaResp()
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        result = tools.read_github_repository("https://github.com/owner/repo")
+        assert "fine.py" in result
+        assert "broken.py" not in result.split("File tree")[1].split("--- FILE")[0] or "FILE: broken.py" not in result
+
+    def test_raw_file_non_200_status_is_skipped(self, tools, monkeypatch):
+        class FakeRepoMetaResp:
+            status_code = 200
+            def json(self):
+                return {"default_branch": "main"}
+
+        class FakeTreeResp:
+            status_code = 200
+            def json(self):
+                return {"tree": [{"type": "blob", "path": "gone.py", "size": 10}]}
+
+        def fake_get(url, headers=None, timeout=None, **kw):
+            if "raw.githubusercontent.com" in url:
+                return type("R", (), {"status_code": 404, "text": "Not Found"})()
+            if "/git/trees/" in url:
+                return FakeTreeResp()
+            return FakeRepoMetaResp()
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        result = tools.read_github_repository("https://github.com/owner/repo")
+        assert "FILE: gone.py" not in result
+
+    def test_individual_file_content_truncated_when_over_max_file_chars(self, tools, monkeypatch):
+        tools.valves.MAX_FILE_CHARS = 20
+
+        class FakeRepoMetaResp:
+            status_code = 200
+            def json(self):
+                return {"default_branch": "main"}
+
+        class FakeTreeResp:
+            status_code = 200
+            def json(self):
+                return {"tree": [{"type": "blob", "path": "long.py", "size": 10}]}
+
+        def fake_get(url, headers=None, timeout=None, **kw):
+            if "raw.githubusercontent.com" in url:
+                return type("R", (), {"status_code": 200, "text": "x" * 500})()
+            if "/git/trees/" in url:
+                return FakeTreeResp()
+            return FakeRepoMetaResp()
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        result = tools.read_github_repository("https://github.com/owner/repo")
+        assert "... [truncated]" in result
+
+    def test_stops_including_files_once_total_char_budget_exceeded(self, tools, monkeypatch):
+        tools.valves.MAX_TOTAL_CHARS = 100
+
+        class FakeRepoMetaResp:
+            status_code = 200
+            def json(self):
+                return {"default_branch": "main"}
+
+        class FakeTreeResp:
+            status_code = 200
+            def json(self):
+                return {"tree": [
+                    {"type": "blob", "path": "a.py", "size": 10},
+                    {"type": "blob", "path": "b.py", "size": 10},
+                    {"type": "blob", "path": "c.py", "size": 10},
+                ]}
+
+        def fake_get(url, headers=None, timeout=None, **kw):
+            if "raw.githubusercontent.com" in url:
+                return type("R", (), {"status_code": 200, "text": "y" * 80})()
+            if "/git/trees/" in url:
+                return FakeTreeResp()
+            return FakeRepoMetaResp()
+
+        monkeypatch.setattr(requests, "get", fake_get)
+        result = tools.read_github_repository("https://github.com/owner/repo")
+        # With an 80-char body per file and only a 100-char total budget,
+        # at most one file's content can fit before the loop breaks.
+        assert result.count("--- FILE:") <= 1
+
     def test_max_files_valve_limits_included_file_count(self, tools, monkeypatch):
         tools.valves.MAX_FILES = 1
 
