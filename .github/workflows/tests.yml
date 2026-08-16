@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  # Also run on direct pushes to main, so a merge that bypasses PR review
+  # (or a merge queue) still gets a signal on the resulting commit.
+  push:
+    branches: [main]
+
+jobs:
+  pytest:
+    name: pytest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: |
+          pytest -q \
+            --cov=lib --cov=knowledge_manager --cov=tools --cov=loaders --cov=main \
+            --cov-report=term-missing \
+            --junitxml=pytest-results.xml
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: pytest results
+          path: pytest-results.xml
+          reporter: java-junit
+          fail-on-error: false
