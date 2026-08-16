@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
       checks: write
       pull-requests: write
 
@@ -40,7 +41,7 @@ jobs:
 
       - name: Publish test results
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         with:
           name: pytest results
           path: pytest-results.xml
