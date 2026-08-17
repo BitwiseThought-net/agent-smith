@@ -96,7 +96,7 @@ jobs:
       # doing it once on main keeps main's badges accurate without touching
       # PR branches at all.
       - name: Generate coverage and test badges
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: always()
         run: |
           mkdir -p badges
           # --local uses genbadge's bundled SVG template instead of calling
@@ -107,7 +107,7 @@ jobs:
           genbadge tests -i pytest-results.xml -o badges/tests-badge.svg --local
 
       - name: Commit updated badges
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: always()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update coverage and test badges [skip ci]"
