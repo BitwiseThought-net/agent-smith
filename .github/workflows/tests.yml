@@ -13,7 +13,7 @@ jobs:
     name: pytest
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       actions: read
       checks: write
       pull-requests: write
@@ -36,7 +36,7 @@ jobs:
       - name: Run tests
         run: |
           pytest -q \
-            --cov=lib --cov=knowledge_manager --cov=tools --cov=loaders --cov=main \
+            --cov=lib --cov=knowledge_manager --cov=tools --cov=loaders --cov=main --cov=ai_io \
             --cov-report=term-missing \
             --cov-report=xml:coverage.xml \
             --cov-report=html:htmlcov \
@@ -72,10 +72,10 @@ jobs:
           output: both
           # fail_below_min is intentionally left unset (defaults to false):
           # thresholds below only color the badge/indicators, they don't fail
-          # the job. Overall repo coverage currently sits around ~46%, pulled
-          # down by main.py's orchestration logic and untested loaders, which
-          # aren't realistically unit-testable without integration tests
-          # against real CrewAI/LiteLLM/ChromaDB services.
+          # the job. Repo coverage currently sits around 99%; main.py stays
+          # slightly below 100% because a few of its lines are either dead
+          # code or a deliberately-untested infinite retry loop -- see
+          # tests/test_main_run_mission.py for details on each one.
           thresholds: "60 80"
 
       - name: Post coverage summary to job summary
@@ -88,3 +88,27 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
+
+      # Everything below only runs on a direct push to main (i.e. after a PR
+      # merges), never on the pull_request trigger. Committing generated
+      # badge SVGs back to a PR branch on every push would create noisy,
+      # unreviewable diffs and can conflict with the PR author's own commits;
+      # doing it once on main keeps main's badges accurate without touching
+      # PR branches at all.
+      - name: Generate coverage and test badges
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p badges
+          # --local uses genbadge's bundled SVG template instead of calling
+          # the shields.io API. Avoids the badge silently breaking (or, worse,
+          # writing an HTTP error message as the SVG's literal content) if
+          # shields.io is ever unreachable or rate-limits the runner.
+          genbadge coverage -i coverage.xml -o badges/coverage-badge.svg --local
+          genbadge tests -i pytest-results.xml -o badges/tests-badge.svg --local
+
+      - name: Commit updated badges
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update coverage and test badges [skip ci]"
+          file_pattern: badges/*.svg
