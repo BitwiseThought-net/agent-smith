@@ -1,11 +1,13 @@
 # The Architect
-
 <img width="2508" height="1212" alt="Screenshot 2026-08-03 194246" src="https://github.com/user-attachments/assets/3838fce4-4ca7-42b2-9a27-c77329c97f83" />
 
 "Your life is the sum of a remainder of an unbalanced equation inherent to the programming of the matrix."
 
 **The Architect** is a hardened, production-ready autonomous agent orchestration framework built on an enterprise-grade Abstract Factory Engine. By completely decoupling agent blueprints, custom tools, and RAG ingestion from the underlying platform runtime, the system gives you the power to swap your entire operational engine across **CrewAI, Microsoft AutoGen, LangGraph, or Hugging Face smolagents** using a single configuration line. This hot-swapping occurs in real-time without requiring code rewrites or container restarts. Operating on a secure, local-first LLM infrastructure, the framework eliminates external API costs and guarantees absolute data privacy during complex multi-agent operations.
-
+---
+[![Tests](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml/badge.svg)](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml)
+[![Coverage](https://raw.githubusercontent.com/BitwiseThought-net/the-architect/main/badges/coverage-badge.svg)](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml)
+[![Tests Passing](https://raw.githubusercontent.com/BitwiseThought-net/the-architect/main/badges/tests-badge.svg)](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml)
 ---
 
 ## 🚀 Key Features
