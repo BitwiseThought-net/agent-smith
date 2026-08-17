@@ -102,3 +102,41 @@ class TestGetActivePlugins:
         plugins_dir.mkdir()
         (plugins_dir / "plugins.json").write_text("{not valid")
         assert utils.get_active_plugins() == {}
+
+
+class TestEnsureSandboxDir:
+    """
+    Shared helper extracted from tools/terminal_safe.py and
+    tools/file_write_safe.py, which previously each contained an identical
+    copy of this create-if-missing logic (flagged by pylint's duplicate-code
+    check).
+    """
+
+    def test_returns_none_when_dir_already_exists(self, isolated_cwd):
+        existing = isolated_cwd / "already_here"
+        existing.mkdir()
+        assert utils.ensure_sandbox_dir(str(existing)) is None
+
+    def test_creates_missing_dir_and_returns_none(self, isolated_cwd):
+        target = isolated_cwd / "new_dir"
+        assert not target.exists()
+        result = utils.ensure_sandbox_dir(str(target))
+        assert result is None
+        assert target.is_dir()
+
+    def test_creates_nested_missing_dirs(self, isolated_cwd):
+        target = isolated_cwd / "a" / "b" / "c"
+        result = utils.ensure_sandbox_dir(str(target))
+        assert result is None
+        assert target.is_dir()
+
+    def test_returns_error_string_when_creation_fails(self, isolated_cwd, monkeypatch):
+        target = isolated_cwd / "unmakeable"
+
+        def boom(*a, **kw):
+            raise PermissionError("no permission")
+        monkeypatch.setattr(os, "makedirs", boom)
+
+        result = utils.ensure_sandbox_dir(str(target))
+        assert result is not None
+        assert "System Error" in result
