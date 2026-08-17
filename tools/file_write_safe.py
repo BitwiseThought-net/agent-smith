@@ -1,6 +1,7 @@
 import os
 from ai_layer.orchestrator import tool
-from lib.utils import get_config_value
+from lib.utils import get_config_value, ensure_sandbox_dir
+
 
 @tool("file_write_safe")
 def file_write_safe(filename: str, content: str) -> str:
@@ -12,11 +13,9 @@ def file_write_safe(filename: str, content: str) -> str:
         return "❌ Security Violation: Path traversal or absolute paths are forbidden. Provide a relative filename only."
 
     # Validate that the configured target sandbox folder physically exists on the filesystem
-    if not os.path.exists(safe_dir):
-        try:
-            os.makedirs(safe_dir)
-        except Exception as e:
-            return f"❌ System Error: Failed to initialize sandbox workspace path: {str(e)}"
+    sandbox_error = ensure_sandbox_dir(safe_dir)
+    if sandbox_error:
+        return sandbox_error
 
     # Construct the absolute path bound strictly within the workspace
     target_path = os.path.join(safe_dir, filename)
@@ -27,6 +26,7 @@ def file_write_safe(filename: str, content: str) -> str:
         return f"✅ Success: File successfully written to sandbox workspace path: {filename}"
     except Exception as e:
         return f"❌ File Write Error: Failed to execute operation: {str(e)}"
+
 
 def get_tools():
     return [file_write_safe]

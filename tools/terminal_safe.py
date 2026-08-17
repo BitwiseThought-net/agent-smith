@@ -1,7 +1,7 @@
-import os
 import subprocess
 from ai_layer.orchestrator import tool
-from lib.utils import get_config_value
+from lib.utils import get_config_value, ensure_sandbox_dir
+
 
 @tool("safe_terminal_exec")
 def safe_terminal_exec(command: str) -> str:
@@ -18,11 +18,9 @@ def safe_terminal_exec(command: str) -> str:
     if ".." in command:
         return "❌ Security Violation: Path traversal operations inside command definitions are forbidden."
 
-    if not os.path.exists(safe_dir):
-        try:
-            os.makedirs(safe_dir)
-        except Exception as e:
-            return f"❌ System Error: Failed to initialize sandbox workspace path: {str(e)}"
+    sandbox_error = ensure_sandbox_dir(safe_dir)
+    if sandbox_error:
+        return sandbox_error
 
     try:
         # Run the validation script strictly using the dynamic safe_dir as the working directory root
@@ -32,7 +30,7 @@ def safe_terminal_exec(command: str) -> str:
             cwd=safe_dir,
             capture_output=True,
             text=True,
-            timeout=exec_timeout
+            timeout=exec_timeout,
         )
         output = result.stdout if result.stdout else ""
         errors = result.stderr if result.stderr else ""
@@ -41,6 +39,7 @@ def safe_terminal_exec(command: str) -> str:
         return f"❌ Execution Failed: Command execution timed out after {exec_timeout} seconds."
     except Exception as e:
         return f"❌ Execution Failed: Shell system loop error: {str(e)}"
+
 
 def get_tools():
     return [safe_terminal_exec]
