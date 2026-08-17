@@ -1,3 +1,4 @@
+"""Discord bot integration module for sending agent responses to Discord channels."""
 import requests
 from ai_layer.orchestrator import tool
 from lib.utils import get_config_value
@@ -36,42 +37,42 @@ def _send_msg(message: str) -> bool:
     bot_settings = get_config_value("DISCORD_BOT_SETTINGS", {})
 
     # 1. Resolve Bot Token
-    BOT_TOKEN = SETTINGS.get("BOT_TOKEN")
-    if not BOT_TOKEN:
+    bot_token = SETTINGS.get("BOT_TOKEN")
+    if not bot_token:
         # FIXED: Mapped key lookups to trace the correct nested UPPERCASE variable paths
-        BOT_TOKEN = bot_settings.get("BOT_TOKEN") if isinstance(bot_settings, dict) else None
-    if not BOT_TOKEN:
+        bot_token = bot_settings.get("BOT_TOKEN") if isinstance(bot_settings, dict) else None
+    if not bot_token:
         return False
 
     # 2. Resolve Server ID (Guild ID)
-    SERVER_ID = SETTINGS.get("SERVER_ID")
-    if not SERVER_ID:
+    server_id = SETTINGS.get("SERVER_ID")
+    if not server_id:
         # FIXED: Mapped key lookups to trace the correct nested UPPERCASE variable paths
-        SERVER_ID = bot_settings.get("GUILD_ID") if isinstance(bot_settings, dict) else None
-    if not SERVER_ID:
+        server_id = bot_settings.get("GUILD_ID") if isinstance(bot_settings, dict) else None
+    if not server_id:
         return False
 
     # 3. Resolve Channel ID
-    CHANNEL_ID = SETTINGS.get("CHANNEL_ID")
-    if not CHANNEL_ID:
+    channel_id = SETTINGS.get("CHANNEL_ID")
+    if not channel_id:
         # FIXED: Mapped key lookups to trace the correct nested UPPERCASE variable paths
-        CHANNEL_ID = bot_settings.get("TARGET_CHANNEL_ID") if isinstance(bot_settings, dict) else None
-    if not CHANNEL_ID:
+        channel_id = bot_settings.get("TARGET_CHANNEL_ID") if isinstance(bot_settings, dict) else None
+    if not channel_id:
         return False
 
 
     # MANDATORY REST API ENDPOINT: Absolute scheme, explicit version, and proper slashes
-    url = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages"
+    url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
 
     headers = {
-        "Authorization": f"Bot {BOT_TOKEN}",
+        "Authorization": f"Bot {bot_token}",
         "Content-Type": "application/json"
     }
 
     try:
         res = requests.post(url, headers=headers, json={"content": message}, timeout=10)
         return res.status_code in [200, 201]
-    except Exception:
+    except requests.RequestException:
         return False
 
 @tool("discord_interaction")

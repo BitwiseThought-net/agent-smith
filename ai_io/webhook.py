@@ -1,3 +1,4 @@
+"""Webhook integration module for sending agent responses to Discord webhooks."""
 import requests
 from ai_layer.orchestrator import tool
 from lib.utils import get_config_value
@@ -26,30 +27,34 @@ SETTINGS = {
 
 
 def _send_msg(message: str) -> bool:
-    BOT_TOKEN = SETTINGS.get("BOT_TOKEN")
-    if not BOT_TOKEN:
-        BOT_TOKEN = get_config_value("BOT_TOKEN")
-    if not BOT_TOKEN:
+    """Send message via Discord API."""
+    bot_token = SETTINGS.get("BOT_TOKEN")
+    if not bot_token:
+        bot_token = get_config_value("BOT_TOKEN")
+    if not bot_token:
         return False
 
-    SERVER_ID = SETTINGS.get("SERVER_ID")
-    if not SERVER_ID:
-        SERVER_ID = get_config_value("SERVER_ID")
-    if not SERVER_ID:
+    server_id = SETTINGS.get("SERVER_ID")
+    if not server_id:
+        server_id = get_config_value("SERVER_ID")
+    if not server_id:
         return False
 
-    CHANNEL_ID = SETTINGS.get("CHANNEL_ID")
-    if not CHANNEL_ID:
-        CHANNEL_ID = get_config_value("CHANNEL_ID")
-    if not CHANNEL_ID:
+    channel_id = SETTINGS.get("CHANNEL_ID")
+    if not channel_id:
+        channel_id = get_config_value("CHANNEL_ID")
+    if not channel_id:
         return False
 
-    url = f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages"
-    headers = {"Authorization": f"Bot {BOT_TOKEN}", "Content-Type": "application/json"}
+    url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
+    headers = {
+        "Authorization": f"Bot {bot_token}",
+        "Content-Type": "application/json"
+    }
     try:
         res = requests.post(url, headers=headers, json={"content": message}, timeout=10)
         return res.status_code in [200, 201]
-    except Exception:
+    except requests.RequestException:
         return False
 
 
@@ -70,6 +75,7 @@ def broadcast_status(message: str) -> bool:
 
 
 def register():
+    """Register the Discord webhook tool and return tool configuration."""
     return {
         "tools": [discord_interaction],
         "enabled_for": ["*"],
