@@ -1,25 +1,13 @@
-"""Smolagents framework integration module for agent orchestration."""
 import os
 import inspect
-from typing import Dict, Any
+from typing import List, Dict, Any
 
 # smolagents imports are isolated purely to this factory connector file
 from smolagents import CodeAgent, LiteLLMModel, Tool
 
 # --- UNIFIED INTERFACE CLASSES ---
 class LLM:
-    """Language model wrapper for smolagents LiteLLM integration."""
-
-    def __init__(
-        self,
-        model,
-        base_url,
-        api_key,
-        temperature=0.3,
-        max_tokens=4096,
-        **kwargs
-    ):
-        """Initialize LLM with configuration parameters."""
+    def __init__(self, model, base_url, api_key, temperature=0.3, max_tokens=4096, **kwargs):
         # smolagents leverages LiteLLM models seamlessly via LiteLLMModel
         self.model_name = model if model.startswith("ollama/") else f"ollama/{model}"
 
@@ -36,10 +24,7 @@ class LLM:
         )
 
 class Agent:
-    """Agent wrapper for smolagents CodeAgent integration."""
-
     def __init__(self, role, goal, backstory, llm, tools=None, **kwargs):
-        """Initialize agent with role, goal, backstory, and LLM."""
         self.role = role
         self.name = role.replace(" ", "_").replace("-", "_")
         self.goal = goal
@@ -60,36 +45,24 @@ class Agent:
         self.native_instance = CodeAgent(
             tools=self.native_tools,
             model=self.llm.native_instance,
-            additional_authorized_imports=[
-                "os",
-                "requests",
-                "json",
-                "time",
-                "pytest"
-            ],
-            prompt_templates=None  # Employs standard default system instructions
+            additional_authorized_imports=["os", "requests", "json", "time", "pytest"],
+            prompt_templates=None # Employs standard default system instructions
         )
 
 class Task:
-    """Task definition for agent execution."""
-
     def __init__(self, description, expected_output, agent, **kwargs):
-        """Initialize task with description, expected output, and assigned agent."""
         self.description = description
         self.expected_output = expected_output
         self.agent = agent
 
 class Crew:
-    """Crew coordinator for managing multiple agents and tasks."""
-
     def __init__(self, agents, tasks, verbose=True, **kwargs):
-        """Initialize crew with agents and tasks."""
         self.agents = agents
         self.tasks = tasks
         self.verbose = verbose
 
     def kickoff(self) -> str:
-        """Execute the task chain sequentially passing historical data context."""
+        """Executes the task chain sequentially passing historical data context."""
         context_history = ""
         last_result = ""
 
@@ -101,71 +74,45 @@ class Crew:
                 f"You are acting as the system's designated {agent.role}.\n"
                 f"Your core persona context:\n{agent.backstory}\n"
                 f"Your overarching architectural goal: {agent.goal}\n\n"
-                f"MISSION ASSIGNMENT TASK ({idx + 1}/{len(self.tasks)}):\n"
-                f"{task.description}\n\n"
+                f"MISSION ASSIGNMENT TASK ({idx + 1}/{len(self.tasks)}):\n{task.description}\n\n"
                 f"EXPECTED OUTPUT FORMAT MANDATE:\n{task.expected_output}\n\n"
             )
 
             if context_history:
-                execution_prompt += (
-                    f"PREVIOUS WORK CONTEXT AND AGENT HIGHLIGHTS:\n"
-                    f"{context_history}\n\n"
-                )
+                execution_prompt += f"PREVIOUS WORK CONTEXT AND AGENT HIGHLIGHTS:\n{context_history}\n\n"
 
-            execution_prompt += (
-                "Execute the task using your tools and write a final return response statement."
-            )
+            execution_prompt += "Execute the task using your tools and write a final return response statement."
 
             try:
                 # Invoke the underlying smolagents local execution block loop run
                 last_result = agent.native_instance.run(execution_prompt)
 
                 # Append result history logs for subsequent agents in the pipeline
-                context_history += (
-                    f"\n--- Output from Step {idx + 1} ({agent.name}) ---\n"
-                    f"{str(last_result)}\n"
-                )
-            except RuntimeError as e:
-                raise RuntimeError(
-                    f"smolagents sandbox error during step {idx + 1} "
-                    f"({agent.name}): {str(e)}"
-                ) from e
+                context_history += f"\n--- Output from Step {idx + 1} ({agent.name}) ---\n{str(last_result)}\n"
+            except Exception as e:
+                raise RuntimeError(f"smolagents sandbox error during step {idx + 1} ({agent.name}): {str(e)}")
 
         return str(last_result)
 
 # --- ADAPTERS ---
 class AdapterTool(Tool):
     """Dynamically converts functions and tools into native smolagents Tool classes."""
-
     def __init__(self, custom_tool):
-        """Initialize adapter with custom tool."""
         # Discover execution method target
         self.func = getattr(custom_tool, "_func", custom_tool)
 
         # Read or reflect naming metadata definitions
-        name = getattr(
-            custom_tool,
-            "name",
-            getattr(self.func, "__name__", "custom_function")
-        )
-        description = getattr(
-            custom_tool,
-            "description",
-            getattr(self.func, "__doc__", "Execute core task logic")
-        )
+        name = getattr(custom_tool, "name", getattr(self.func, "__name__", "custom_function"))
+        description = getattr(custom_tool, "description", getattr(self.func, "__doc__", "Execute core task logic"))
 
         # Derive structural variable formatting schemas from function inspection
         sig = inspect.signature(self.func)
         inputs: Dict[str, Any] = {}
         for param_name, param in sig.parameters.items():
-            if param_name == "self":
-                continue
+            if param_name == "self": continue
             # Map type hints to expected tool property values
             p_type = "string" if param.annotation == str else "any"
-            inputs[param_name] = {
-                "type": p_type,
-                "description": f"Argument parameter {param_name}"
-            }
+            inputs[param_name] = {"type": p_type, "description": f"Argument parameter {param_name}"}
 
         output_type = "string" if sig.return_annotation == str else "any"
 
@@ -177,7 +124,6 @@ class AdapterTool(Tool):
         self.output_type = output_type
 
     def forward(self, *args, **kwargs) -> Any:
-        """Execute the wrapped tool function."""
         return self.func(*args, **kwargs)
 
 def tool(*args, **kwargs):
@@ -186,44 +132,24 @@ def tool(*args, **kwargs):
     Attaches critical descriptors utilized by the AdapterTool conversion layer.
     """
     def decorator(func):
-        """Decorate function with tool metadata."""
         func.name = kwargs.get("name", func.__name__)
-        func.description = kwargs.get(
-            "description",
-            func.__doc__ or "Execute tool actions"
-        )
+        func.description = kwargs.get("description", func.__doc__ or "Execute tool actions")
         func._func = func
         return func
     return decorator
 
 # --- AGNOSTIC INTERFACE STUBS ---
 class Knowledge:
-    """Knowledge source types for agent context."""
-
-    CSV = object
-    Docling = object
-    JSON = object
-    Excel = object
-    TextFile = object
-    XML = object
+    CSV = object; Docling = object; JSON = object
+    Excel = object; TextFile = object; XML = object
 
 class DuckDuckGoSearchTool(Tool):
-    """Web search tool using DuckDuckGo integration."""
-
     def __init__(self, *args, **kwargs):
-        """Initialize the search tool."""
         super().__init__()
         self.name = "duckduckgo_search"
         self.description = "Search the web for technical documentation and standards."
-        self.inputs = {
-            "query": {
-                "type": "string",
-                "description": "The search query string"
-            }
-        }
+        self.inputs = {"query": {"type": "string", "description": "The search query string"}}
         self.output_type = "string"
-
     def forward(self, query: str) -> str:
-        """Execute web search and return results."""
         # Simple dynamic web scraper pass-through stub
         return f"Simulated search results for query parameter: {query}"

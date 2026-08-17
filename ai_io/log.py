@@ -1,4 +1,3 @@
-"""Logging integration module for outputting agent responses to system logs."""
 from lib.logger import log_text
 
 def broadcast_status(message: str) -> bool:
