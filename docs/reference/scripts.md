@@ -24,6 +24,11 @@ run on the Docker host vs. inside a container.
   `docs/tools/open-webui-tools.md`; link there instead of duplicating.
 - `scripts/logs.sh` — `docker logs -f the-architect`, tails the main
   container's logs.
+- `scripts/test-changed.sh` — thin wrapper around `pytest --testmon`
+  (extra args passed through) for fast local incremental test runs; link to
+  `docs/reference/testing.md` for the full explanation of the underlying
+  `.testmondata` test-impact tracking rather than duplicating it here, and
+  note it's a host-side/local dev convenience, not something CI uses.
 - `scripts/prune.sh` — `docker system prune -a`; document this as a
   destructive, host-wide Docker cleanup command (removes *all* unused
   Docker data, not just this project's) and flag the risk clearly.

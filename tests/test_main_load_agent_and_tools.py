@@ -91,7 +91,7 @@ def test_tool_import_failure_is_logged_and_skipped_others_still_load(
 ):
     """
     agent_config can list several tools; a broken one should only produce a
-    warning log and be skipped, not abort loading the rest -- and shouldn't
+    warning log and be skipped, not abort loading the rest - and shouldn't
     prevent the function from reaching the (later) agent-file check.
     """
     fake_layer_module = types.ModuleType("ai_layer.faketest")
@@ -128,8 +128,8 @@ def test_successful_construction_returns_agent_and_layer(
     reads the LLM configuration off a *module-level global* `main.llm_config`
     rather than from its own `llm` parameter (which is accepted but never
     used). That global is normally only set as a side effect of run_mission()
-    executing first. Calling load_agent_and_tools() on its own -- as this
-    test does -- requires manually setting main.llm_config beforehand, or
+    executing first. Calling load_agent_and_tools() on its own - as this
+    test does - requires manually setting main.llm_config beforehand, or
     this raises NameError deep inside a broad try/except and silently
     returns (None, None) instead of constructing anything.
     """
@@ -356,7 +356,7 @@ def test_missing_llm_config_global_causes_silent_none_none(
     having run first), construction fails with a NameError that's caught
     by the function's own broad except-and-log, so the caller just sees
     (None, None) with no indication in the return value that anything
-    unusual happened -- only the logged error explains it.
+    unusual happened - only the logged error explains it.
     """
     monkeypatch.delattr(main, "llm_config", raising=False)
 

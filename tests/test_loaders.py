@@ -3,7 +3,7 @@ Every loader in loaders/ follows the same shape: check the file exists,
 check the target framework's Knowledge class exposes the expected source
 type, and build a source object tagged with {"source": <filename>, "type":
 <ext>}. Rather than hand-writing near-identical test functions per file, we
-drive the whole set from one parametrized table -- this also means a loader
+drive the whole set from one parametrized table - this also means a loader
 wired to the *wrong* Knowledge attribute (as loaders/md.py is, see below)
 gets caught automatically rather than needing a bespoke test to notice it.
 """
@@ -77,7 +77,7 @@ def test_returns_none_when_framework_lacks_expected_source_type(
     Simulates a framework whose Knowledge factory doesn't support this
     source type (e.g. an ai_layer/*.py adapter that only implements a
     subset of source types). Patching the loader module's own imported
-    `Knowledge` reference -- rather than the shared fake in conftest --
+    `Knowledge` reference - rather than the shared fake in conftest --
     keeps each test isolated and pins down exactly which attribute each
     loader checks.
     """
@@ -130,8 +130,8 @@ class TestPdfLoaderIsBroken:
     loaders/pdf.py is broken: it references a bare name `PDFKnowledgeSource`
     that is never imported or defined anywhere in the module, and unlike
     every other loader it doesn't check os.path.exists() first or consult
-    the Knowledge factory at all. Any call -- for an existing file, a
-    missing file, doesn't matter -- raises NameError. These tests pin down
+    the Knowledge factory at all. Any call - for an existing file, a
+    missing file, doesn't matter - raises NameError. These tests pin down
     that current (broken) behavior; they are not a workaround or a fix.
     """
 

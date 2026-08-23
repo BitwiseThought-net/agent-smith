@@ -74,7 +74,7 @@ jobs:
           # thresholds below only color the badge/indicators, they don't fail
           # the job. Repo coverage currently sits around 99%; main.py stays
           # slightly below 100% because a few of its lines are either dead
-          # code or a deliberately-untested infinite retry loop -- see
+          # code or a deliberately-untested infinite retry loop - see
           # tests/test_main_run_mission.py for details on each one.
           thresholds: "60 80"
 
