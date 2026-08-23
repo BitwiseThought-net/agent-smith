@@ -1,6 +1,6 @@
 # GitHub Actions Workflows
 
-> Status: stub. See `docs/README.md` for how to complete this page.
+> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
 
 ## TODO
 
