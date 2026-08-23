@@ -1,7 +1,7 @@
 # Documentation Index
 
 This is the table of contents for `docs/`. Keep it up to date: whenever a new
-stub page is created (per the instructions in `docs/LLM_INSTRUCTIONS.md`), add
+stub page is created (per the instructions in `docs/LLM_DOCS.prompt.md`), add
 a line for it here in the appropriate section. ✅ marks pages that are fully
 written; unmarked pages are still stubs with a `## TODO` list.
 

@@ -1,10 +1,10 @@
 # CLI / Terminal Usage
 
-> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
+> Status: stub. See `docs/LLM_DOCS.prompt.md` for how to complete this page.
 
 ## TODO
 
-Follow the "Document every CLI flag / option" rule in `docs/LLM_INSTRUCTIONS.md`
+Follow the "Document every CLI flag / option" rule in `docs/LLM_DOCS.prompt.md`
 closely for this page - read `main.py:run_mission`'s argument parsing at the
 top of the function very carefully, since the different invocation modes are
 easy to misdescribe.

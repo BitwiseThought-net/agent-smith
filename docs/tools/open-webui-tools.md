@@ -1,11 +1,11 @@
 # Open WebUI Tools
 
-> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
+> Status: stub. See `docs/LLM_DOCS.prompt.md` for how to complete this page.
 
 ## TODO
 
 - Explain this is the second of the two distinct "tool" systems in the repo
-  (see the project-wide note in `docs/LLM_INSTRUCTIONS.md`): these are Open WebUI
+  (see the project-wide note in `docs/LLM_DOCS.prompt.md`): these are Open WebUI
   plugin-style Python modules (a `Tools` class with a nested `Valves`
   pydantic model, and a docstring frontmatter with `title`/`author`/
   `description`/`version`), installed directly into the Open WebUI chat

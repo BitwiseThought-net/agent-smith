@@ -1,6 +1,6 @@
 # Security & Sandbox Model
 
-> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
+> Status: stub. See `docs/LLM_DOCS.prompt.md` for how to complete this page.
 
 ## TODO
 
@@ -8,7 +8,7 @@
   Environment" section as the intro/framing for this page, then back each
   claim with the actual enforcing code (don't just restate the README
   prose) per the "start with a summary" and "base every claim on the code"
-  rules in `docs/LLM_INSTRUCTIONS.md`.
+  rules in `docs/LLM_DOCS.prompt.md`.
 - Document `lib/utils.py:ensure_sandbox_dir(safe_dir)`: the shared helper
   that creates the configured sandbox directory if missing, used by both
   safe tools below, and returns a formatted error string on failure that

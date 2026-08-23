@@ -5,7 +5,7 @@ Every `.md` file in this folder (other than this one) may be a stub containing a
 `## TODO` section instead of finished, human-readable documentation. The file
 is the prompt/instructions for the LLM (e.g. an agent, or you, Claude) tasked
 with turning those stubs into real documentation, one file - or one TODO item
-— at a time.
+- at a time.
 
 **This file itself is never a target for the workflow below** - it is the
 instruction set, not a stub.

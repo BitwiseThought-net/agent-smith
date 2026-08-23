@@ -1,6 +1,6 @@
 # Output Channels (`ai_io/`)
 
-> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
+> Status: stub. See `docs/LLM_DOCS.prompt.md` for how to complete this page.
 
 ## TODO
 
@@ -39,7 +39,7 @@
     walkthrough (bot creation, token, intents, OAuth2 scopes/permissions,
     inviting the bot, enabling Developer Mode, getting server/channel IDs),
     per the "Document setup steps and prerequisites" rule in
-    `docs/LLM_INSTRUCTIONS.md`.
+    `docs/LLM_DOCS.prompt.md`.
   - Document `RESPONSE_PREFIX_ENABLED` and how it maps to the
     `identity_prefix` behavior described above.
 - Document how to add a new output channel: create `ai_io/<name>.py` with a
