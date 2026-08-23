@@ -16,7 +16,7 @@
 ## 📖 Full Documentation
 
 This README covers the essentials. For complete, code-verified reference
-documentation — every config key and its default, every CLI flag, full
+documentation - every config key and its default, every CLI flag, full
 per-service Docker Compose settings, the agent/tool/output-channel systems,
 and known discrepancies between this README and the current implementation —
 see the [`docs/`](docs/README.md) folder, starting with
@@ -48,8 +48,8 @@ see the [`docs/`](docs/README.md) folder, starting with
 │   ├── orchestrator.py       # Runtime manager & routing hub
 │   ├── crewai.py             # Native CrewAI engine connector (active)
 │   ├── smolagents.py         # smolagents local execution node (active)
-│   ├── autogen.py.example    # AutoGen adapter — rename to .py to enable
-│   └── langgraph.py.example  # LangGraph adapter — rename to .py to enable
+│   ├── autogen.py.example    # AutoGen adapter - rename to .py to enable
+│   └── langgraph.py.example  # LangGraph adapter - rename to .py to enable
 ├── ai_io/                    # Output-channel & identity plugins (log, discord, webhook)
 ├── agents/                   # Unified Agent Persona Scripts (Framework Agnostic)
 ├── tools/                    # Agent Tools + Open WebUI Tools (see docs/tools/)
@@ -93,7 +93,7 @@ see the [`docs/`](docs/README.md) folder, starting with
    cp team.json.example team.json
    cp .env.example .env
    ```
-   At minimum, set `ADMIN_PASSWORD` in `.env` — Docker Compose refuses to
+   At minimum, set `ADMIN_PASSWORD` in `.env` - Docker Compose refuses to
    start without it (it's used to create the Open WebUI admin account that
    the Tools get installed under). See [`.env` Reference](docs/configuration/env-file.md)
    for every other key.
@@ -127,7 +127,7 @@ Controls the global fallback behavior of the machine. Changes are applied on the
 | `VERBOSE` | Toggles detailed agent "thought" logs. | `true` |
 
 > `config.json.example` also ships `EMBEDDING_MODEL`, `ANTHROPIC_API_KEY`,
-> `RETRY_DELAY_SECONDS`, and `OLLAMA_URL` — none of these are currently read
+> `RETRY_DELAY_SECONDS`, and `OLLAMA_URL` - none of these are currently read
 > by any code path, so setting them has no effect. The embedding model is
 > hardcoded to `nomic-embed-text` directly in `docker-compose.yml`'s
 > `ollama` entrypoint instead. See
@@ -148,7 +148,7 @@ Compose, not by the Python app.
 - `WEBUI_SECRET_KEY`: Security key for the WebUI session.
 - `OLLAMA_BASE_URL` & `LITELLM_BASE_URL`: Inter-container internal bridge network addresses.
 - `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`: **`ADMIN_PASSWORD` is
-  required** — Compose will refuse to start without it. This account is
+  required** - Compose will refuse to start without it. This account is
   created (or signed into) in Open WebUI and used to install the custom
   Tools automatically on boot.
 
@@ -189,7 +189,7 @@ docker exec -it the-architect python main.py --agent researcher "Find the latest
 > ⚠️ **Known issue:** in the current `main.py`, the `--agent` detection
 > compares `sys.argv` (a list) directly to the string `"--agent"`, which is
 > never true. In practice this means the `--agent <name>` form above does
-> **not** currently route to the named agent — it falls through to the
+> **not** currently route to the named agent - it falls through to the
 > Global Initial Override path instead (applied to the first agent in
 > `team.json`, with the raw argument list embedded in the task
 > description). If you need targeted routing today, set that agent's task
@@ -206,7 +206,7 @@ directory (there isn't one in this repo). Each `ai_io/<name>.py` module can
 define a `register()` function (to add a tool and/or an identity-prefix rule
 to every agent) and/or a `broadcast_status(message) -> bool` function (to
 receive a copy of every completed task's result). A `team.json` agent opts
-into a channel by listing it in that agent's `"output"` array — see
+into a channel by listing it in that agent's `"output"` array - see
 [`team.json` Reference](docs/configuration/team-json.md).
 
 ### `log` (default)
@@ -226,7 +226,7 @@ Setting `RESPONSE_PREFIX_ENABLED` (in `SETTINGS`, or
 `agent_name: ` to their responses.
 
 **Setup:** both modules embed the same numbered setup instructions in their
-own `INFO["instructions"]` list — go to the Discord Developer Portal, create
+own `INFO["instructions"]` list - go to the Discord Developer Portal, create
 an application and bot, enable the Message Content intent, generate an
 OAuth2 invite URL with `bot` + `applications.commands` scopes and message
 permissions, invite it to your server, then copy the bot token, server
@@ -259,7 +259,7 @@ Place any technical documentation (`.txt`, `.pdf`, `.csv`, `.json`, `.xml`, etc.
 - Agents with `allow_knowledge_retrieval=True` can then query this data during missions regardless of which active orchestration backend is running.
 - **No archive support:** there is no `zip` (or similar archive) loader. A
   `.zip` dropped into `/knowledge` is skipped with a warning, not extracted
-  — unpack any archive before placing its contents here. See
+  - unpack any archive before placing its contents here. See
   [File Loaders](docs/knowledge/loaders.md) for the full supported-extension
   list.
 
@@ -290,7 +290,7 @@ For fast local iteration, `pytest-testmon` is included: `pytest --testmon`
 (or `scripts/test-changed.sh`) only re-runs tests that are new/changed, or
 whose previously-covered application code changed since the last run,
 using an on-disk `.testmondata` map (git-ignored). This is a local dev
-speed tool only — CI always runs the full suite with coverage
+speed tool only - CI always runs the full suite with coverage
 instrumentation. See [Testing](docs/reference/testing.md).
 
 ---

@@ -7,7 +7,7 @@
 - Explain the overall RAG pipeline: files dropped in `/knowledge` (host path
   configurable via the `docker-compose.yml` volume mount, currently
   `/media/knowledge:/app/knowledge` with a commented-out
-  `./knowledge:/app/knowledge` alternative — note this discrepancy so
+  `./knowledge:/app/knowledge` alternative - note this discrepancy so
   readers know which host path actually feeds the container) are scanned by
   `knowledge_manager.py:get_all_knowledge_sources()`, converted into
   framework knowledge-source objects via per-extension loaders in
@@ -27,16 +27,16 @@
 - Document `ingest.py` / `scripts/ingest.sh`: a standalone manual sync
   entrypoint (`docker exec -it <container> python ingest.py`, wrapped by
   `scripts/ingest.sh`) that calls the same `get_all_knowledge_sources()`
-  and logs a summary — note from reading `ingest.py` closely whether it
+  and logs a summary - note from reading `ingest.py` closely whether it
   actually pushes data into ChromaDB itself or only lists/validates sources
   (the current implementation appears to only log which sources *would* be
-  processed — confirm and document precisely, since this affects whether
+  processed - confirm and document precisely, since this affects whether
   users need to rely on the `librarian` agent/mission run instead for actual
   indexing).
 - Document the automatic librarian-driven sync path: when the `librarian`
   agent runs as part of a `team.json` mission, `main.py:run_mission` calls
   `get_all_knowledge_sources()` before kickoff and passes the results into
-  that step's `Crew(knowledge_sources=...)` — link to
+  that step's `Crew(knowledge_sources=...)` - link to
   `docs/configuration/team-json.md`'s librarian special-case notes.
 - Document supported file types by listing every `loaders/*.py` module
   present, and link to `docs/knowledge/loaders.md` for the loader-by-loader
@@ -45,4 +45,4 @@
   (.txt, .pdf, .csv, .json, .xml, etc.) into `/knowledge`", and note the
   Jenkinsfile's example of doing this via a Jenkins credential file copy
   (`FILE_1` → `knowledge/Python_Machine_Learning_Second_Edition.pdf`) as a
-  CI/CD-driven alternative — link to `docs/ci-cd/jenkins.md`.
+  CI/CD-driven alternative - link to `docs/ci-cd/jenkins.md`.

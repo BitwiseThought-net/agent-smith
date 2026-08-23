@@ -17,7 +17,7 @@ Every service lives in `docker-compose.yml` at the repo root:
 
 | Service | Role |
 |---|---|
-| `the-architect` | The agent runtime — runs `main.py`, executes missions defined in `team.json` |
+| `the-architect` | The agent runtime - runs `main.py`, executes missions defined in `team.json` |
 | `ollama` | Local LLM inference server; pulls and serves the configured model plus the embedding model |
 | `litellm` | OpenAI-compatible proxy in front of Ollama; the single endpoint every other component talks to for chat completions |
 | `open-webui` | Chat UI, pointed at LiteLLM as its backend; also hosts the installed custom Tools |
@@ -44,11 +44,11 @@ A "mission" is one run of `main.py`. At a conceptual level:
    framework.
 2. `main.py` iterates that list in order. For each agent, it dynamically
    loads the agent's persona from `agents/<name>.py` and instantiates it
-   through whichever framework adapter is named — either the agent's own
+   through whichever framework adapter is named - either the agent's own
    `"framework"` key or the global `AI_FRAMEWORK` config default.
 3. Each agent's task(s) run in turn. The text result of every completed task
    is appended to a running context string, which gets prefixed onto the
-   *next* task's description — so later agents see a summary of everything
+   *next* task's description - so later agents see a summary of everything
    earlier agents produced, without needing shared memory or a database.
 4. After each task, its result is persisted to a knowledge ledger file and
    broadcast to every output channel listed in that agent's `"output"`
@@ -65,11 +65,11 @@ manifest schema, and
 The word "tool" refers to two unrelated things in this repo, and it's easy
 to conflate them:
 
-1. **Agent tools** (`tools/*.py` with a `get_tools()` function) — attached to
+1. **Agent tools** (`tools/*.py` with a `get_tools()` function) - attached to
    `team.json` agents via their `"tools"` array, and invoked by the LLM
    during a mission. See [Agent Tools](../tools/agent-tools.md).
 2. **Open WebUI Tools** (`tools/github_repo_tool.py`,
-   `tools/web_scraper_tool.py`) — Open WebUI plugin-convention modules
+   `tools/web_scraper_tool.py`) - Open WebUI plugin-convention modules
    installed directly into the Open WebUI chat interface by the
    `tool-installer` service. They are available to a human chatting in Open
    WebUI, not to `team.json` agents. See
@@ -89,7 +89,7 @@ one that actively triggers this scan as part of a mission. See
 ## Project structure
 
 Verified against the actual repository layout (not just README.md's
-description — see the discrepancy note below):
+description - see the discrepancy note below):
 
 ```
 .
@@ -121,11 +121,11 @@ description — see the discrepancy note below):
 > **Discrepancy note:** README.md's "Project Structure Map" and its `ai_layer/`
 > feature description list `ai_layer/autogen.py` and `ai_layer/langgraph.py`
 > as if they ship active. In this checkout they only exist as
-> `ai_layer/autogen.py.example` and `ai_layer/langgraph.py.example` — inert
+> `ai_layer/autogen.py.example` and `ai_layer/langgraph.py.example` - inert
 > until renamed. See
 > [The `ai_layer` Abstraction Engine](ai-layer-abstraction.md) for what that
 > means in practice. Similarly, README.md's setup steps reference
 > `plugins/discord_bot.py.example` and `plugins/discord_notifications.py.example`,
-> but no `plugins/` directory exists anywhere in this checkout — see
+> but no `plugins/` directory exists anywhere in this checkout - see
 > [Output Channels](../ai_io/output-channels.md) for the plugin mechanism
 > that actually ships (`ai_io/discord.py`, `ai_io/webhook.py`) instead.

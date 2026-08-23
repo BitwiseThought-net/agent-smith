@@ -27,5 +27,5 @@
 - Document opening Open WebUI (`http://localhost:${UI_PORT}`) and mention
   that the GitHub Repository Reader and Web Page Scraper tools
   (`tools/github_repo_tool.py`, `tools/web_scraper_tool.py`) are
-  auto-installed there by the `tool-installer` service — link to
+  auto-installed there by the `tool-installer` service - link to
   `docs/tools/open-webui-tools.md`.

@@ -7,7 +7,7 @@
 - Document `.github/workflows/tests.yml`: read the full file and describe
   its trigger conditions, the Python version(s) it runs against, how it
   installs dependencies (likely `requirements.txt` + `requirements-dev.txt`
-  — confirm from the file), and what test/coverage commands it runs. Note
+  - confirm from the file), and what test/coverage commands it runs. Note
   its relationship to the `badges/tests-badge.svg` and
   `badges/coverage-badge.svg` files referenced in README.md's badge row
   (likely generated via `genbadge`, present in `requirements-dev.txt` —
@@ -19,7 +19,7 @@
   workflow), summarize what it would do if enabled, and note this as
   something a maintainer could opt into by renaming it to `.yml`.
 - Document `.github/workflows/auto-delete-cache.vml`: note the unusual
-  `.vml` extension (not `.yml`) — flag explicitly that GitHub Actions only
+  `.vml` extension (not `.yml`) - flag explicitly that GitHub Actions only
   recognizes `.yml`/`.yaml`, so this file is **not** currently an active
   workflow regardless of its content; summarize what it appears to intend
   to do and note this as a likely naming typo for a maintainer to fix.

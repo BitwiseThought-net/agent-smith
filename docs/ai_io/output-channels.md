@@ -20,7 +20,7 @@
 - Document `ai_io/log.py`: the default/fallback channel; just prints the
   message to stdout via `lib.logger.log_text` and always returns `True`.
 - Document `ai_io/discord.py` and `ai_io/webhook.py` together (they overlap
-  significantly — read both closely and document any real differences you
+  significantly - read both closely and document any real differences you
   find, e.g. config source names, rather than assuming they're identical):
   - Both provide a `discord_interaction` agent tool (registered for all
     agents via `enabled_for: ["*"]`) and a `broadcast_status` output-routing
@@ -31,7 +31,7 @@
     dict (edit-in-place; takes priority) falling back to `config.json`'s
     `DISCORD_BOT_SETTINGS` object (`BOT_TOKEN`→`bot_settings.BOT_TOKEN` for
     `discord.py`; note `webhook.py` instead falls back to flat top-level
-    `get_config_value("BOT_TOKEN"/"SERVER_ID"/"CHANNEL_ID")` calls — confirm
+    `get_config_value("BOT_TOKEN"/"SERVER_ID"/"CHANNEL_ID")` calls - confirm
     this discrepancy against the actual code before documenting it, since
     it affects which `config.json` shape the user needs).
   - Reproduce the numbered Discord Developer Portal setup steps from each

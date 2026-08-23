@@ -9,27 +9,27 @@
   and re-exports a unified set of names (`Agent`, `Task`, `Crew`, `LLM`,
   `tool`, `Process`, `Knowledge`, `FileReadTool`, `FileWriterTool`,
   `EXECTool`, `DuckDuckGoSearchTool`) that the rest of the codebase imports
-  from — never from a framework package directly. Source:
+  from - never from a framework package directly. Source:
   `ai_layer/orchestrator.py`.
 - Document the "Unified Interface Boundary" contract every adapter module
   must implement (`Agent`, `Task`, `Crew`, `LLM`, `tool`, plus the
-  `Knowledge`/`DuckDuckGoSearchTool` stub classes) — summarize this from
+  `Knowledge`/`DuckDuckGoSearchTool` stub classes) - summarize this from
   `CONTRIBUTING.md`'s "Abstraction Architecture Paradigm" and "Step-by-Step
   Factory Integration Protocol" sections, rewritten for a documentation
   audience rather than a contributor checklist.
 - Document each shipped/example adapter module and its native backend, one
   subsection per framework:
-  - `ai_layer/crewai.py` — wraps native CrewAI, `crewai_tools`
+  - `ai_layer/crewai.py` - wraps native CrewAI, `crewai_tools`
     (`FileReadTool`, `FileWriterTool`), and knowledge source classes; also
     defines the inline `NativeShellInterpreter` (`EXECTool`) and
     `NativeDuckDuckGoSearch` fallback tools.
-  - `ai_layer/smolagents.py` — wraps Hugging Face `smolagents`
+  - `ai_layer/smolagents.py` - wraps Hugging Face `smolagents`
     (`CodeAgent` + `LiteLLMModel`), including the `AdapterTool` class that
     reflects a Python function's signature into a smolagents `Tool`.
-  - `ai_layer/langgraph.py.example` — an example-only adapter (not active
+  - `ai_layer/langgraph.py.example` - an example-only adapter (not active
     unless renamed to `.py`) built on `langgraph`/`langchain_openai`,
     including its `StateGraph`-based `Crew.kickoff()` implementation.
-  - `ai_layer/autogen.py.example` — an example-only adapter (not active
+  - `ai_layer/autogen.py.example` - an example-only adapter (not active
     unless renamed to `.py`) built on Microsoft AutoGen's
     `AssistantAgent`/`UserProxyAgent`.
   For each, note what happens if a `team.json` agent requests a framework

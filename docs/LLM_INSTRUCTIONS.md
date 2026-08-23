@@ -4,10 +4,10 @@ This `docs/` folder is a **stub documentation set** for "The Architect" reposito
 Every `.md` file in this folder (other than this one) may be a stub containing a
 `## TODO` section instead of finished, human-readable documentation. The file
 is the prompt/instructions for the LLM (e.g. an agent, or you, Claude) tasked
-with turning those stubs into real documentation, one file — or one TODO item
+with turning those stubs into real documentation, one file - or one TODO item
 — at a time.
 
-**This file itself is never a target for the workflow below** — it is the
+**This file itself is never a target for the workflow below** - it is the
 instruction set, not a stub.
 
 ---
@@ -19,10 +19,10 @@ and asked to complete it. Follow this process exactly:
 
 1. **Read the TODO list** at the bottom of the target file under `## TODO`.
    Each item is a short pointer to the source of truth (a file path, config
-   key, script, or feature) that needs to be documented — not the
+   key, script, or feature) that needs to be documented - not the
    documentation itself.
 2. **Read the referenced source code/config directly** from the repository
-   before writing anything. Do not guess or invent behavior — base every
+   before writing anything. Do not guess or invent behavior - base every
    claim on what the code actually does. If a TODO references a file that no
    longer exists or has changed shape, document the code as it exists today.
 3. **Write the finished documentation** into the body of the file, above the
@@ -47,8 +47,9 @@ and asked to complete it. Follow this process exactly:
    documentation index) so it stays discoverable.
 
 Never leave placeholder text like "TBD" or "coming soon" or "..." in the finished
-documentation body — either fully document the item or leave it as an
+documentation body - either fully document the item or leave it as an
 explicit TODO item you did not get to.
+Never use em dashes in documentation. Instead of em dashes, use hyphens.
 
 ---
 
@@ -89,12 +90,12 @@ corresponding example/source file, each with:
 - The exact key name.
 - Its default value (pull this from the `.example` file, the code's
   `get_config_value(key, default)` call, or the `Field(default=...)`
-  declaration — cite the real default, not an assumed one).
+  declaration - cite the real default, not an assumed one).
 - What it controls / how it's used, in one or two sentences.
 - Which file(s) actually read it (e.g. "read by `lib/utils.py:get_config_value`
   and consumed in `main.py`").
 
-Do not omit a key because it seems minor — an incomplete settings table is
+Do not omit a key because it seems minor - an incomplete settings table is
 worse than a long one. If a page's TODO says "document config", treat that as
 "document every key in that config surface," not a representative sample.
 
@@ -104,7 +105,7 @@ For any script or entrypoint that accepts CLI arguments or flags (currently:
 - Every flag/positional argument, its syntax, and whether it's optional.
 - How output/behavior differs between each mode (e.g. no-argument default
   run, a bare positional instruction string, vs. `--agent <name>` targeted
-  routing) — walk through what actually happens in the code for each case,
+  routing) - walk through what actually happens in the code for each case,
   since these code paths are easy to misdescribe.
 - A concrete, copy-pasteable example command for each mode.
 
@@ -114,7 +115,7 @@ Toolkit, an Ollama model pull, a Discord Developer Portal application, a
 GitHub personal access token, Jenkins credentials, etc.), give an ordered,
 numbered list of the exact steps a human needs to take outside this repo
 before the feature will work. Note any values the user must copy back into
-this repo's config (and exactly where — which file, which key).
+this repo's config (and exactly where - which file, which key).
 
 ### 6. Document configuration steps clearly
 Beyond just listing settings, give the reader a clear "how do I actually turn
@@ -143,11 +144,11 @@ stay consistent across files:
   variable / `.env`, (3) the hardcoded default passed by the calling code.
   State this priority order on every page that discusses configuration.
 - `config.json`, `team.json`, and any real `plugins/*.py` (other than
-  `__init__.py` and `*.py.example` files) are git-ignored — see
-  `gitignore-snippet.txt` — and must be created locally from the matching
+  `__init__.py` and `*.py.example` files) are git-ignored - see
+  `gitignore-snippet.txt` - and must be created locally from the matching
   `*.example` file.
 - "Tools" in this repo exist in two distinct systems that are easy to
-  conflate — call this out explicitly wherever both are discussed:
+  conflate - call this out explicitly wherever both are discussed:
   1. **Agent tools** (`tools/*.py`): Python modules with a `get_tools()`
      function, loaded by `main.py` and attached to CrewAI/AutoGen/etc.
      agents per the `"tools"` array in `team.json`.
@@ -155,5 +156,5 @@ stay consistent across files:
      `tools/web_scraper_tool.py`): these follow the Open WebUI `Tools`
      class + `Valves` plugin convention and are installed into the Open
      WebUI chat UI itself by `scripts/install_tools.py` /
-     the `tool-installer` Compose service — they are not wired into
+     the `tool-installer` Compose service - they are not wired into
      `team.json` agents.

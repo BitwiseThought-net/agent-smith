@@ -19,7 +19,7 @@
   `/app/output`), and returns explicit `❌ Security Violation` /
   `✅ Success` strings rather than raising exceptions. Contrast with the
   **unrestricted** `tools/file_write.py` (native `FileWriterTool`, no path
-  checks) — document clearly when a `team.json` author would choose one
+  checks) - document clearly when a `team.json` author would choose one
   over the other, since picking the wrong one defeats the sandbox.
 - Document `tools/terminal_safe.py`'s enforcement precisely: allow-lists
   commands starting with `python `, `pytest `, or `python3 ` (rejects
@@ -28,14 +28,14 @@
   (config key, default `30` seconds). Contrast with the **unrestricted**
   `tools/terminal.py` (framework-native `EXECTool`, e.g.
   `NativeShellInterpreter` in `ai_layer/crewai.py`, which runs arbitrary
-  shell commands with only a 60-second timeout and no allow-list) — flag
+  shell commands with only a 60-second timeout and no allow-list) - flag
   this contrast prominently, since including `terminal.py` in a `team.json`
   agent's tools effectively grants unrestricted shell access inside the
   container.
 - Document the `agents/auditor_safe.py` agent's role as a *process*-level
   control (an LLM agent whose goal/backstory is to review other agents'
   proposed code/paths for sandbox compliance) versus the *code*-level
-  controls above — make clear this is advisory (LLM judgment) rather than a
+  controls above - make clear this is advisory (LLM judgment) rather than a
   hard technical enforcement mechanism, unlike the tool-level checks.
 - Document the container-level sandbox boundary: the `the-architect`
   service's `output/` volume mount in `docker-compose.yml` is the only
