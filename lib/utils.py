@@ -86,7 +86,7 @@ def ensure_sandbox_dir(safe_dir: str):
     terminal execution) so the create-and-report-failure logic lives in one
     place instead of being duplicated across each tool module.
 
-    Returns None on success, or a formatted error string on failure -- the
+    Returns None on success, or a formatted error string on failure - the
     caller is expected to return that string directly to short-circuit.
     """
     if not os.path.exists(safe_dir):

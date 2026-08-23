@@ -3,8 +3,8 @@ file_read.py, file_write.py, terminal.py, and search_duckduckgo.py are thin
 get_tools() wrappers around classes provided by the active ai_layer adapter
 (here, our fake orchestrator from conftest). They carry no real logic of
 their own beyond "instantiate and return in a list", but they're still
-exercised code paths -- e.g. team.json can reference these tool names
-directly -- so we confirm each one wires up correctly.
+exercised code paths - e.g. team.json can reference these tool names
+directly - so we confirm each one wires up correctly.
 """
 from tools import file_read, file_write, terminal, search_duckduckgo
 from ai_layer.orchestrator import (

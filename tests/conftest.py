@@ -121,8 +121,8 @@ def _install_fake_orchestrator():
 
 # IMPORTANT: this must run at conftest *import* time, not inside a fixture.
 # Pytest imports test modules (which in turn import tools.*/loaders.*, which
-# import ai_layer.orchestrator) during collection, before any fixture -- even
-# an autouse session-scoped one -- gets a chance to run. Installing the fake
+# import ai_layer.orchestrator) during collection, before any fixture - even
+# an autouse session-scoped one - gets a chance to run. Installing the fake
 # module here, at module load time, ensures it's in sys.modules before any
 # test file is collected.
 _install_fake_orchestrator()

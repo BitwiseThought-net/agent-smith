@@ -71,6 +71,10 @@ code-coverage-results.md
 .pytest_cache/
 cover/
 
+# pytest-testmon's local test-impact database (see scripts/test-changed.sh)
+.testmondata
+.testmondata-*
+
 # Translations
 *.mo
 *.pot

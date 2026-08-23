@@ -2,8 +2,8 @@
 ai_io/discord.py and ai_io/webhook.py both implement the same plugin
 contract main.py's load_agent_and_tools() scans for (register(), tools,
 broadcast_status). webhook.py was a near-duplicate of discord.py with
-several real bugs -- see the module docstring in webhook.py's git history
-/ PR notes -- that have since been fixed to match discord.py's (correct)
+several real bugs - see the module docstring in webhook.py's git history
+/ PR notes - that have since been fixed to match discord.py's (correct)
 behavior:
   - _send_msg() returning a truthy string instead of False on missing
     credentials, which made discord_interaction() report success even when
@@ -18,7 +18,7 @@ literally named "discord_interaction". If both files are present under
 ai_io/ at once, main.py's plugin-hook scan (see
 tests/test_main_load_agent_and_tools.py) will register two different
 tools under the same name for every agent. That's a cross-file design
-decision -- rename one, retire one, or otherwise disambiguate -- rather
+decision - rename one, retire one, or otherwise disambiguate - rather
 than a bug either individual file's tests can meaningfully assert about.
 """
 import requests
@@ -137,7 +137,7 @@ class TestBroadcastStatus:
 class TestWebhookUsesCorrectDiscordApiUrl:
     """Pins down the fixed URL specifically, since a malformed URL would
     silently fail against the real Discord API even with valid
-    credentials -- the earlier version was missing /api/v10/channels/."""
+    credentials - the earlier version was missing /api/v10/channels/."""
 
     def test_url_includes_api_v10_channels_path(self, no_env_leak, isolated_cwd, monkeypatch):
         webhook_mod.SETTINGS["BOT_TOKEN"] = "t"
@@ -159,7 +159,7 @@ class TestDiscordNestedConfigFallback:
     discord.py's _send_msg has a second-tier fallback: if SETTINGS doesn't
     have a credential, it checks the nested DISCORD_BOT_SETTINGS dict from
     config.json before giving up. webhook.py has no such fallback (see
-    TestWebhookFlatConfigFallback below) -- these are exercised separately
+    TestWebhookFlatConfigFallback below) - these are exercised separately
     since the two modules' credential-resolution logic genuinely differs.
     """
 

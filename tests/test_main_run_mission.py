@@ -80,7 +80,7 @@ def test_terminal_instruction_branch_logs_when_argv_has_extra_args(isolated_cwd,
     routes into the "global terminal instruction" logging path. Note the
     sibling `sys.argv == "--agent"` branch immediately above it compares
     the whole argv *list* to the literal string "--agent", which can never
-    be True in Python -- that specific branch is dead code as written, so
+    be True in Python - that specific branch is dead code as written, so
     it isn't (and can't meaningfully be) exercised here.
     """
     monkeypatch.setattr(main.sys, "argv", ["main.py", "do something interesting"])
@@ -128,7 +128,7 @@ def fake_layer(monkeypatch):
 
     Also pins sys.argv down to a single harmless element. main.py reads the
     *real* process sys.argv directly (len(sys.argv) > 1 triggers its
-    "terminal instruction" override path) -- left uncontrolled, that means
+    "terminal instruction" override path) - left uncontrolled, that means
     these tests' behavior would silently depend on how pytest itself was
     invoked (`pytest -q tests/foo.py` has a very different argv length than
     `pytest`), which is exactly the kind of hidden coupling that makes
@@ -175,7 +175,7 @@ class TestTaskExecutionLoop:
 
     def test_unregistered_output_channel_is_logged_and_skipped(self, isolated_cwd, no_env_leak, fake_layer):
         """A channel name with no matching ai_io/<name>.py module shouldn't
-        abort the mission -- just gets logged as a routing failure."""
+        abort the mission - just gets logged as a routing failure."""
         (isolated_cwd / "team.json").write_text(json.dumps({
             "active_agents": [{
                 "name": "coder",
@@ -260,7 +260,7 @@ class TestTaskExecutionLoop:
         *outside* the try/except at the bottom of the loop (it runs, along
         with set_mission_timeout/clear_mission_timeout, before that try
         block begins). A framework-level exception from kickoff() is
-        therefore NOT caught here -- it propagates straight out of
+        therefore NOT caught here - it propagates straight out of
         run_mission() uncaught, and because clear_mission_timeout() is
         skipped too, it also leaves the mission-timeout SIGALRM armed.
         This test pins down that behavior and cleans up the dangling alarm
