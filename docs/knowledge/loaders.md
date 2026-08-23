@@ -12,7 +12,7 @@
   extension in the filename (minus `.py`) is what
   `knowledge_manager.py` matches against each `/knowledge` file's
   extension.
-- Enumerate every shipped loader and which `Knowledge.*` class it maps to —
+- Enumerate every shipped loader and which `Knowledge.*` class it maps to -
   read each file in `loaders/` individually rather than assuming a pattern,
   since they are not all consistent (e.g. `loaders/py.py`'s own docstring
   says it maps to a "JSON processor" for `.py` files, and `loaders/pdf.py`

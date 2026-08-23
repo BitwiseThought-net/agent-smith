@@ -5,7 +5,7 @@
 ## TODO
 
 This page duplicates/overlaps with `docs/architecture/ai-layer-abstraction.md`
-— when completing both, decide a clean split (e.g. this page = practical
+- when completing both, decide a clean split (e.g. this page = practical
 "how do I pick/switch a framework" guide; the architecture page = "how the
 abstraction mechanism itself works") and cross-link rather than repeat.
 
@@ -19,7 +19,7 @@ abstraction mechanism itself works") and cross-link rather than repeat.
 - For each framework, document: whether it ships active (`ai_layer/crewai.py`,
   `ai_layer/smolagents.py`) or only as an example requiring rename
   (`ai_layer/langgraph.py.example`, `ai_layer/autogen.py.example`), which
-  Python packages it requires (cross-check against `requirements.txt` —
+  Python packages it requires (cross-check against `requirements.txt` -
   note `langgraph`/`langchain_core`/`autogen`/`smolagents` packages are
   **not** currently listed in `requirements.txt`, only `langchain_openai`
   is - flag this as a prerequisite the reader must add manually if they
