@@ -16,13 +16,13 @@
   period.
 - Document the `autoheal` service (`willfarrell/autoheal`): watches Docker
   container health status via the mounted Docker socket and restarts any
-  container labeled `autoheal: "true"` that goes unhealthy — list every
+  container labeled `autoheal: "true"` that goes unhealthy - list every
   service in `docker-compose.yml` carrying that label
   (`the-architect`, `open-webui`, `litellm`, `chromadb`, `ollama`).
 - Document the "Idle State" behavior from `main.py:run_mission`: when a
   task-level exception occurs and `MAX_RETRIES` (config key, default `3`)
   is `<= 1`, the process enters an infinite `update_heartbeat(); sleep(60)`
-  loop instead of exiting — explain that this deliberately keeps the
+  loop instead of exiting - explain that this deliberately keeps the
   container's heartbeat "alive" (so `autoheal` won't restart it) while
   halting mission progress, to allow log inspection via `scripts/logs.sh`
   before a human intervenes. Cross-link to
@@ -34,5 +34,5 @@
 - Document `wait_for_llm(url, model)` in `main.py`: polls
   `{LITELLM_URL}/models` every 15 seconds (up to a 600-second/10-minute
   total timeout) at mission start, checking for an `ollama/{model}` entry,
-  before any agents run — explain this is why first boot can appear to
+  before any agents run - explain this is why first boot can appear to
   "hang" while Ollama finishes pulling the model.

@@ -7,7 +7,7 @@ a role, goal, backstory, and default model for that persona, framed as a
 framework-agnostic `Agent` built through `ai_layer.orchestrator` (see
 [The `ai_layer` Abstraction Engine](../architecture/ai-layer-abstraction.md)).
 
-## The module contract — and an important runtime caveat
+## The module contract - and an important runtime caveat
 
 Every `agents/<name>.py` file exposes:
 
@@ -18,7 +18,7 @@ def get_agent(tools=None, model_name=None):
 ```
 
 The filename (minus `.py`) is the exact string a `team.json` entry's
-`"name"` field must match — `main.py:load_agent_and_tools` looks for
+`"name"` field must match - `main.py:load_agent_and_tools` looks for
 `agents/{agent_name}.py` on disk and errors out if it isn't found.
 
 **However, tracing `main.py:load_agent_and_tools` closely shows it does
@@ -39,15 +39,15 @@ agent = _layer.Agent(
 ```
 
 `agent_module` (the result of importing `agents.<name>`) is assigned but
-never used again — the import only proves the file exists and is
+never used again - the import only proves the file exists and is
 syntactically valid Python. The actual `Agent` is built directly by
 `main.py` from `team.json`'s own `"role"` / `"task_description"` /
 `"backstory"` keys, falling back to generic strings (`role` = the raw agent
 name, `backstory` = `"Expert {agent_name} operative."`) if `team.json`
-doesn't set them — which the shipped `team.json.example` doesn't, for any
+doesn't set them - which the shipped `team.json.example` doesn't, for any
 agent. **Practical effect:** with the example manifests as shipped, none of
 the curated personas below (their specific role titles, goals, backstories,
-or per-agent default models) are actually applied at runtime — every agent
+or per-agent default models) are actually applied at runtime - every agent
 runs with a generic role/backstory and the single mission-wide model set in
 `main.py:run_mission`'s top-level `llm_config` (from the `MODEL_NAME`
 config key). `get_agent()` and its per-agent model fallback are effectively
@@ -61,23 +61,23 @@ agent's `"role"`, `"task_description"`, and `"backstory"` explicitly in
 
 ## Shipped agents
 
-| Agent | Role (per `get_agent()`, not currently applied — see above) | Default model fallback (only used if `get_agent()` were called) | `allow_knowledge_retrieval` |
+| Agent | Role (per `get_agent()`, not currently applied - see above) | Default model fallback (only used if `get_agent()` were called) | `allow_knowledge_retrieval` |
 |---|---|---|---|
-| `agents/analyst.py` | Data Insights Analyst — extracts and interprets patterns from structured/unstructured data | `llama3:latest` | Yes |
-| `agents/architect.py` | Solution Architect — designs scalable, modular system structures | `codellama:latest` | Yes |
-| `agents/auditor.py` | Cybersecurity Auditor — reviews code/research for vulnerabilities and injection risks broadly (general OWASP-style review) | `llama3:latest` | No |
-| `agents/auditor_safe.py` | Cybersecurity Auditor — same role title as `auditor`, but scoped specifically to verifying file operations stay inside `/app/output` and flagging absolute-path/`..` traversal attempts | `llama3:latest` | No |
-| `agents/coder.py` | Senior Software Engineer — turns requirements/research into Python code | `codellama:latest` | No |
-| `agents/librarian.py` | System Librarian — indexes and organizes local documentation | `mistral:latest` | Yes |
-| `agents/manager.py` | Autonomous Project Manager — coordinates handoffs between agents | `llama3:latest` | Yes |
-| `agents/researcher.py` | Documentation Specialist — retrieves/cross-references technical info from local docs and the web | `mistral:latest` | Yes |
-| `agents/tester.py` | Quality Assurance Engineer — writes pytest suites, finds edge cases | `codellama:latest` | Yes |
-| `agents/writer.py` | Technical Content Strategist — produces README/API/system documentation | `llama3:latest` | Yes |
+| `agents/analyst.py` | Data Insights Analyst - extracts and interprets patterns from structured/unstructured data | `llama3:latest` | Yes |
+| `agents/architect.py` | Solution Architect - designs scalable, modular system structures | `codellama:latest` | Yes |
+| `agents/auditor.py` | Cybersecurity Auditor - reviews code/research for vulnerabilities and injection risks broadly (general OWASP-style review) | `llama3:latest` | No |
+| `agents/auditor_safe.py` | Cybersecurity Auditor - same role title as `auditor`, but scoped specifically to verifying file operations stay inside `/app/output` and flagging absolute-path/`..` traversal attempts | `llama3:latest` | No |
+| `agents/coder.py` | Senior Software Engineer - turns requirements/research into Python code | `codellama:latest` | No |
+| `agents/librarian.py` | System Librarian - indexes and organizes local documentation | `mistral:latest` | Yes |
+| `agents/manager.py` | Autonomous Project Manager - coordinates handoffs between agents | `llama3:latest` | Yes |
+| `agents/researcher.py` | Documentation Specialist - retrieves/cross-references technical info from local docs and the web | `mistral:latest` | Yes |
+| `agents/tester.py` | Quality Assurance Engineer - writes pytest suites, finds edge cases | `codellama:latest` | Yes |
+| `agents/writer.py` | Technical Content Strategist - produces README/API/system documentation | `llama3:latest` | Yes |
 
 All ten follow the same internal shape: resolve a target model (explicit
 `model_name` argument → `MODEL_NAME` config value → the per-agent hardcoded
 default above), build an `LLM` via `ai_layer.orchestrator.LLM` pointed at
-`LITELLM_URL`/`OPENAI_API_KEY`/`TEMPERATURE` (config keys — see
+`LITELLM_URL`/`OPENAI_API_KEY`/`TEMPERATURE` (config keys - see
 [`config.json` Reference](../configuration/config-json.md)), then return an
 `Agent` with `memory=True` and `verbose=True`.
 
@@ -103,5 +103,5 @@ itself is an LLM-judgment control, not a technical enforcement mechanism).
 3. Since `get_agent()` is not currently invoked by `main.py` (see the
    caveat above), also set that `team.json` entry's own `"role"`,
    `"task_description"`, and `"backstory"` keys directly if you want a
-   persona distinct from the generic defaults — don't rely on the new
+   persona distinct from the generic defaults - don't rely on the new
    module's `get_agent()` body taking effect on its own.

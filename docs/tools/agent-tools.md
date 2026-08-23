@@ -5,7 +5,7 @@
 ## TODO
 
 - Explain this is one of the two distinct "tool" systems in the repo (see
-  the project-wide note in `docs/LLM_INSTRUCTIONS.md`) — these are Python modules
+  the project-wide note in `docs/LLM_INSTRUCTIONS.md`) - these are Python modules
   loaded by `main.py:load_agent_and_tools` and attached to an agent based on
   its `"tools"` array in `team.json`. Contrast briefly with
   `docs/tools/open-webui-tools.md` and link to it.
@@ -19,7 +19,7 @@
   framework primitive it wraps:
   - `tools/file_read.py` → `ai_layer.orchestrator.FileReadTool`.
   - `tools/file_write.py` → `ai_layer.orchestrator.FileWriterTool`
-    (unrestricted write location — contrast with `file_write_safe` below).
+    (unrestricted write location - contrast with `file_write_safe` below).
   - `tools/file_write_safe.py` → custom `@tool("file_write_safe")` function;
     document its sandboxing behavior (writes only under
     `SAFE_OUTPUT_DIR`, blocks `..` and absolute paths) and link to
@@ -33,7 +33,7 @@
     `cwd=SAFE_OUTPUT_DIR` and a `TOOL_EXEC_TIMEOUT`-second timeout) and
     link to `docs/reference/security-sandbox.md`.
   - `tools/search_duckduckgo.py` → `ai_layer.orchestrator.DuckDuckGoSearchTool`.
-  - `tools/github_repo_tool.py` and `tools/web_scraper_tool.py` — note these
+  - `tools/github_repo_tool.py` and `tools/web_scraper_tool.py` - note these
     two are *dual-purpose*: they also implement the Open WebUI `Tools`
     class convention and get auto-installed into Open WebUI. Cover their
     `get_tools()`-style usage (if any) here, but put the full Valves/config

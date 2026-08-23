@@ -9,7 +9,7 @@
   plugin-style Python modules (a `Tools` class with a nested `Valves`
   pydantic model, and a docstring frontmatter with `title`/`author`/
   `description`/`version`), installed directly into the Open WebUI chat
-  interface — not wired into `team.json` agents. Contrast briefly with
+  interface - not wired into `team.json` agents. Contrast briefly with
   `docs/tools/agent-tools.md` and link to it.
 - Document `tools/github_repo_tool.py` fully:
   - What it does: given a public (or, with a token, private) GitHub repo
@@ -29,7 +29,7 @@
     individual files and stops early once `MAX_FILES`/`MAX_TOTAL_CHARS` is
     hit.
   - Note explicitly: it does **not** accept an uploaded zip file or local
-    path — only a `github.com/owner/repo[...]` URL string.
+    path - only a `github.com/owner/repo[...]` URL string.
 - Document `tools/web_scraper_tool.py` fully:
   - What it does: fetches a URL and returns cleaned plain-text content
     (script/style/markup stripped via BeautifulSoup).
@@ -44,7 +44,7 @@
   signs up (or signs in as a fallback) an admin account from
   `ADMIN_EMAIL`/`ADMIN_PASSWORD`/`ADMIN_NAME`, then POSTs every `.py` file
   in `/tools` (mounted read-only from the repo's `tools/` dir) to Open
-  WebUI's Tools API — deriving each tool's id from its filename and its
+  WebUI's Tools API - deriving each tool's id from its filename and its
   display name/description from the docstring frontmatter. Document that it
   is idempotent/non-destructive: it **skips** (never overwrites) a tool id
   that already exists in Open WebUI, and the documented way to push a source

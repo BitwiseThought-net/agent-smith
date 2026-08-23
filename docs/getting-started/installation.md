@@ -12,7 +12,7 @@
   `config.json.example` → `config.json`, `team.json.example` → `team.json`,
   and creating `plugins/discord_bot.py` / `plugins/discord_notifications.py`
   (note: these plugin source files are referenced by README.md but are not
-  present in this repo checkout — flag this as a gap the reader needs to
+  present in this repo checkout - flag this as a gap the reader needs to
   supply their own implementation for, based on the `ai_io/discord.py` /
   `ai_io/webhook.py` plugin pattern documented in
   `docs/ai_io/output-channels.md`).
