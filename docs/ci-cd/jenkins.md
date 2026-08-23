@@ -1,6 +1,6 @@
 # Jenkins Deployment
 
-> Status: stub. See `docs/README.md` for how to complete this page.
+> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
 
 ## TODO
 
@@ -11,7 +11,7 @@
   `env.GIT_URL` (strips the `.git` suffix), used to namespace the Jenkins
   credential IDs looked up in the next stage.
 - Document, as a numbered prerequisite/setup list (per the "Document setup
-  steps and prerequisites" rule in `docs/README.md`), every Jenkins
+  steps and prerequisites" rule in `docs/LLM_INSTRUCTIONS.md`), every Jenkins
   credential the pipeline expects to exist, named `<REPO_NAME>-<suffix>`:
   `-env` (secret file → copied to `.env`), `-team-json` (secret file →
   copied to `team.json`), `-config-json` (secret file → copied to

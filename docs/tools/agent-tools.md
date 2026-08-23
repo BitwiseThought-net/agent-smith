@@ -1,11 +1,11 @@
 # Agent Tools (`tools/` + `team.json`)
 
-> Status: stub. See `docs/README.md` for how to complete this page.
+> Status: stub. See `docs/LLM_INSTRUCTIONS.md` for how to complete this page.
 
 ## TODO
 
 - Explain this is one of the two distinct "tool" systems in the repo (see
-  the project-wide note in `docs/README.md`) — these are Python modules
+  the project-wide note in `docs/LLM_INSTRUCTIONS.md`) — these are Python modules
   loaded by `main.py:load_agent_and_tools` and attached to an agent based on
   its `"tools"` array in `team.json`. Contrast briefly with
   `docs/tools/open-webui-tools.md` and link to it.

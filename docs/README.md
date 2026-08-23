@@ -1,24 +1,25 @@
 # Documentation Index
 
 This is the table of contents for `docs/`. Keep it up to date: whenever a new
-stub page is created (per the instructions in `docs/README.md`), add a line
-for it here in the appropriate section.
+stub page is created (per the instructions in `docs/LLM_INSTRUCTIONS.md`), add
+a line for it here in the appropriate section. ✅ marks pages that are fully
+written; unmarked pages are still stubs with a `## TODO` list.
 
 ## Getting Started
 - [Installation](getting-started/installation.md)
 - [Quickstart](getting-started/quickstart.md)
 
 ## Architecture
-- [System Overview](architecture/overview.md)
+- ✅ [System Overview](architecture/overview.md)
 - [The `ai_layer` Abstraction Engine](architecture/ai-layer-abstraction.md)
 
 ## Configuration
-- [`config.json` Reference](configuration/config-json.md)
-- [`.env` Reference](configuration/env-file.md)
-- [`team.json` Reference](configuration/team-json.md)
+- ✅ [`config.json` Reference](configuration/config-json.md)
+- ✅ [`.env` Reference](configuration/env-file.md)
+- ✅ [`team.json` Reference](configuration/team-json.md)
 
 ## Agents
-- [Built-in Agents](agents/overview.md)
+- ✅ [Built-in Agents](agents/overview.md)
 
 ## Tools
 - [Agent Tools (`tools/` + `team.json`)](tools/agent-tools.md)

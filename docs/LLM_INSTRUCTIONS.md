@@ -43,8 +43,8 @@ and asked to complete it. Follow this process exactly:
      with the same brevity and file-path-pointer style as the other stubs in
      this repo.
    Then link to it from the page that spawned it, and, if it doesn't fit any
-   existing subfolder, add a short entry for it to `docs/SUMMARY.md` (create
-   that index file if it does not yet exist) so it stays discoverable.
+   existing subfolder, add a short entry for it to `docs/README.md` (the
+   documentation index) so it stays discoverable.
 
 Never leave placeholder text like "TBD" or "coming soon" or "..." in the finished
 documentation body — either fully document the item or leave it as an
