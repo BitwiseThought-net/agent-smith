@@ -10,7 +10,7 @@ deployment-specific instructions.
 
 The repo also ships a `tasks.json` at the root with the identical schema
 (and near-identical content, minus the multi-framework mix) to
-`team.json.example`. **`tasks.json` is not read by any code in this repo** —
+`team.json.example`. **`tasks.json` is not read by any code in this repo** -
 confirmed by searching every Python file for the string `tasks.json` and
 finding no references. It appears to be a legacy or sample artifact left
 over from an earlier iteration; treat it as reference material only, not as

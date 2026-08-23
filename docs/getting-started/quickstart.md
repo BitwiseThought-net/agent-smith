@@ -13,7 +13,7 @@
   `docker restart the-architect`) causes `main.py`'s `run_mission()` to
   execute every agent/task listed in `team.json` in order. Explain the
   `running_context` hand-off between agents (each step's result is appended
-  to `running_context` and passed into the next task's description) —
+  to `running_context` and passed into the next task's description) -
   see `main.py:run_mission`.
 - Document the single global terminal-override quickstart example from
   `scripts/command.sh` / README.md "Terminal Command Interface" section:

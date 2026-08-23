@@ -10,7 +10,7 @@
   - confirm from the file), and what test/coverage commands it runs. Note
   its relationship to the `badges/tests-badge.svg` and
   `badges/coverage-badge.svg` files referenced in README.md's badge row
-  (likely generated via `genbadge`, present in `requirements-dev.txt` —
+  (likely generated via `genbadge`, present in `requirements-dev.txt` -
   confirm how/where badge generation happens in the workflow).
 - Document `.github/workflows/auto-pr.yml`: read the full file and describe
   its trigger and what it automates.

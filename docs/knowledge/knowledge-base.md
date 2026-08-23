@@ -13,7 +13,7 @@
   framework knowledge-source objects via per-extension loaders in
   `loaders/`, and made queryable by any agent with
   `allow_knowledge_retrieval=True` (see `docs/agents/overview.md`) through
-  the active framework's `Crew(..., knowledge_sources=...)` mechanism —
+  the active framework's `Crew(..., knowledge_sources=...)` mechanism -
   backed by ChromaDB (`docker-compose.yml` `chromadb` service).
 - Document `knowledge_manager.py` in detail:
   - `validate_loaders(knowledge_files)`: checks a `loaders/<ext>.py` module

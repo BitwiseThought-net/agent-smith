@@ -18,7 +18,7 @@
 This README covers the essentials. For complete, code-verified reference
 documentation - every config key and its default, every CLI flag, full
 per-service Docker Compose settings, the agent/tool/output-channel systems,
-and known discrepancies between this README and the current implementation —
+and known discrepancies between this README and the current implementation -
 see the [`docs/`](docs/README.md) folder, starting with
 [`docs/README.md`](docs/README.md).
 
@@ -61,7 +61,7 @@ see the [`docs/`](docs/README.md) folder, starting with
 └── docker-compose.yml        # Multi-container service matrix
 ```
 
-> **Note:** `autogen.py` and `langgraph.py` ship as `.py.example` files —
+> **Note:** `autogen.py` and `langgraph.py` ship as `.py.example` files -
 > they are not active until renamed, and their pip packages are not in
 > `requirements.txt` by default. See
 > [Supported Frameworks](docs/ai_layer/frameworks.md). There is no

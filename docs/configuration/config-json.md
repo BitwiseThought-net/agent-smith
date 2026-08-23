@@ -80,7 +80,7 @@ restarting the `the-architect` container - this is what README.md calls
   controlled by `TEAM_CONFIG`.
 - [Output Channels](../ai_io/output-channels.md) - full detail on
   `DISCORD_BOT_SETTINGS` and the Discord/webhook plugin config precedence.
-- [Resilience & Health Monitoring](../operations/resilience-health.md) —
+- [Resilience & Health Monitoring](../operations/resilience-health.md) -
   full detail on `MAX_RETRIES`'s idle-loop behavior and
   `MISSION_TIMEOUT_SECONDS`.
 - [Security & Sandbox Model](../reference/security-sandbox.md) - full detail
