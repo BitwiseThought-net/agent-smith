@@ -28,8 +28,7 @@ jobs:
               --title "🚀 Auto-PR: ${{ github.ref_name }}" \
               --body "Automated PR created from push to branch: ${{ github.ref_name }}" \
               --base main \
-              --head "${{ github.ref_name }}" \
-              --label "auto-generated,needs-review"
+              --head "${{ github.ref_name }}"
           else
             echo "✅ PR already exists. Skipping creation."
           fi
