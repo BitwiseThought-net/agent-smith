@@ -5,6 +5,8 @@
 
 **The Architect** is a hardened, production-ready autonomous agent orchestration framework built on an enterprise-grade Abstract Factory Engine. By completely decoupling agent blueprints, custom tools, and RAG ingestion from the underlying platform runtime, the system gives you the power to swap your entire operational engine across **CrewAI, Microsoft AutoGen, LangGraph, or Hugging Face smolagents** using a single configuration line. This hot-swapping occurs in real-time without requiring code rewrites or container restarts. Operating on a secure, local-first LLM infrastructure, the framework eliminates external API costs and guarantees absolute data privacy during complex multi-agent operations.
 
+Or... if you just want a self-hosted LiteLLM OLLAMA instance that is easy to spin up. It's that too! (Just with features you can ignore.)
+
 ---
 
 [![Tests](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml/badge.svg)](https://github.com/BitwiseThought-net/the-architect/actions/workflows/tests.yml)
